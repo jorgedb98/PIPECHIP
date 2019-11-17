@@ -73,3 +73,27 @@ wget -O genome.fa.gz $GENOME
 gunzip genome.fa.gz
 
 
+## Download annotation 
+
+cd ../annotation
+wget -O annotation.gtf.gz 
+gunzip annotation.gtf.gz
+
+## Building reference index
+
+cd ../genome
+bowtie2-build genome.fa index
+
+## Download samples
+
+cd $WD/samples
+
+I=0
+
+while [ $I -lt $NUMSAM ]
+do
+   fastq-dump --split-files sample$(($I+1))
+   ((I++))
+done
+
+
