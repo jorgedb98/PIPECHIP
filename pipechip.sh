@@ -53,5 +53,23 @@ done
 
 ##Generate the working directory
 
+mkdir $WD
+cd $WD
+mkdir genome annotation samples results logs 
+
+cd samples
+I=1
+
+while [ $I -le $NUMSAM ]
+do
+   mkdir sample$I
+   ((I++))
+done
+
+## Download genome of reference
+
+cd ../genome
+wget -O genome.fa.gz $GENOME
+gunzip genome.fa.gz
 
 
