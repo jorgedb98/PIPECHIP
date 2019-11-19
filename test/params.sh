@@ -1,4 +1,4 @@
-working_directory: /home/sarajorge/BAG2019/tarea_1/PIPECHIP/chip_processing
+working_directory: $HOME/opt/PIPECHIP
 number_of_samples: 4
 genome: ftp://ftp.ensemblgenomes.org/pub/release-45/plants/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz
 annotation: ftp://ftp.ensemblgenomes.org/pub/release-45/plants/gtf/arabidopsis_thaliana/Arabidopsis_thaliana.TAIR10.45.gtf.gz
