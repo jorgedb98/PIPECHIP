@@ -131,6 +131,7 @@ do
    cd chip$((I+1))
    fastq-dump --split-files ${SAMPLES_CHIP[$I]}
    cd $WD/samples/chip
+   sleep 1m ##Wait 1 minute
    ((I++))
 done
 
@@ -151,7 +152,7 @@ done
 I=1
 while [ $I -le $NUMCHIP ]
 do
-   qsub -N chip$I -o $WD/logs/chip$I chip_seq_sample_processing.sh $I $WD ${NUM_SAMPLES}
+   qsub -N chip$I -o $WD/logs/chip$I chip_seq_sample_processing.sh $I $WD ${NUM_CHIP} ${SAMPLES_CHIP[$((I-1))]}  
    ((I++))
 
 done
@@ -161,4 +162,4 @@ done
 I=1
 while [ $I -le $NUMINPUT ]
 do
-   qsub -N input$I -o $WD/logs/input$I chip_seq_sample_processing.sh $I $WD ${NUM_SAMPLES}
+   qsub -N input$I -o $WD/logs/input$I $HOME/opt/PIPECHIP/chip_seq_sample_processing.sh $I $WD ${NUM_SAMPLES}

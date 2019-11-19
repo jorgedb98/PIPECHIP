@@ -8,9 +8,9 @@ WD=$2
 NUMCHIP=$3
 SRA=$4
 
-##Acces sample folder 
+##Access chip folder 
 
-cd $WD/samples/chip${SAM_ID}
+cd $WD/samples/chip${CHIP_ID}
 
 ##QC and mapping 
 
@@ -19,21 +19,21 @@ if [ -e {$SRA}_2.fastq ]
      fastqc {$SRA}_1.fastq
      fastqc {$SRA}_2.fastq
 
-     bowtie2 -x ../../genome/index -1 {$SRA}_1.fastq -2 {$SRA}_2.fastq -S chip${$SRA}.sam
+     bowtie2 -x ../../genome/index -1 {$SRA}_1.fastq -2 {$SRA}_2.fastq -S chip${CHIP_ID}.sam
 
    else
      fastqc {$SRA}_1.fastq
 
-     bowtie2 -x ../../genome/index -U {$SRA}_1.fastq -S chip${SAM_ID}.sam
+     bowtie2 -x ../../genome/index -U {$SRA}_1.fastq -S chip${CHIP_ID}.sam
 fi
 
 ## Transcript assembly 
 
-samtools view -S -b chip${SAM_ID}.sam > chip${SAM_ID}.bam
-rm chip${SAM_ID}.sam
-samtools sort chip${SAM_ID}.bam -o chip_sorted_${SAM_ID}.bam
-rm chip${SAM_ID}.bam
-samtools index chip_sorted_${SAM_ID}.bam
+samtools view -S -b chip${CHIP_ID}.sam > chip${CHIP_ID}.bam
+rm chip${CHIP_ID}.sam
+samtools sort chip${CHIP_ID}.bam -o chip_sorted_${CHIP_ID}.bam
+rm chip${CHIP_ID}.bam
+samtools index chip_sorted_${CHIP_ID}.bam
 
 
 ## Sincronisation poit trough blackboard
