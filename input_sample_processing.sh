@@ -1,12 +1,20 @@
-## Procesamiento de las muestras de input 
-## Author: Sara Cartan Moya and Jorge Dominguez Barragan 
+## Author: Sara Cartan Moya and Jorge Dominguez Barragan
+## Date: November 2019
+## Contact: saracartanmoya@gmail.com or jodombar@gmail.com
+
+#$ -S /bin/bash
+#$ -N input_sample_processing
+#$ -V
+#$ -cwd
+#$ -j yes
+#$ -o input_sample_processing
 
 ##Reading parameters
 
 INPUT=$1
 WD=$2
 NUMCHIP=$3
-SRA=$4
+
 
 ## Access input folder
 
@@ -14,17 +22,17 @@ cd $WD/samples/input${INPUT}
 
 ##QC and mapping
 
-if [ -e {$SRA}_2.fastq ]
+if [ -e input${INPUT}_2.fastq ]
    then
-     fastqc {$SRA}_1.fastq
-     fastqc {$SRA}_2.fastq
+     fastqc input${INPUT}_1.fastq
+     fastqc input${INPUT}_2.fastq
 
-     bowtie2 -x ../../genome/index -1 {$SRA}_1.fastq -2 {$SRA}_2.fastq -S input${INPUT}.sam
+     bowtie2 -x ../../genome/index -1 input${INPUT}_1.fastq -2 input${INPUT}_2.fastq -S input${INPUT}.sam
 
    else
-     fastqc {$SRA}_1.fastq
+     fastqc input${INPUT}_1.fastq
 
-     bowtie2 -x ../../genome/index -U {$SRA}_1.fastq -S input${INPUT}.sam
+     bowtie2 -x ../../genome/index -U input${INPUT}_1.fastq -S input${INPUT}.sam
 fi
 
 

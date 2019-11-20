@@ -1,12 +1,21 @@
-## Procesamiento de las muestras de Chip
-## Author: Sara Cartan Moya and Jorge Dominguez Barragan 
+## Author: Sara Cartan Moya and Jorge Dominguez Barragan
+## Date: November 2019
+## Contact: saracartanmoya@gmail.com or jodombar@gmail.com
+
+#$ -S /bin/bash
+#$ -N chip_sample_processing
+#$ -V
+#$ -cwd
+#$ -j yes
+#$ -o chip_sample_processing
+
 
 ## Reading parameters
 
 CHIP_ID=$1
 WD=$2
 NUMCHIP=$3
-SRA=$4
+
 
 ##Access chip folder 
 
@@ -14,17 +23,17 @@ cd $WD/samples/chip${CHIP_ID}
 
 ##QC and mapping 
 
-if [ -e {$SRA}_2.fastq ]
+if [ -e chip${CHIP_ID}_2.fastq ]
    then
-     fastqc {$SRA}_1.fastq
-     fastqc {$SRA}_2.fastq
+     fastqc chip${CHIP_ID}_1.fastq
+     fastqc chip${CHIP_ID}_2.fastq
 
-     bowtie2 -x ../../genome/index -1 {$SRA}_1.fastq -2 {$SRA}_2.fastq -S chip${CHIP_ID}.sam
+     bowtie2 -x ../../genome/index -1 chip${CHIP_ID}_1.fastq -2 chip${CHIP_ID}_2.fastq -S chip${CHIP_ID}.sam
 
    else
-     fastqc {$SRA}_1.fastq
+     fastqc chip${CHIP_ID}_1.fastq
 
-     bowtie2 -x ../../genome/index -U {$SRA}_1.fastq -S chip${CHIP_ID}.sam
+     bowtie2 -x ../../genome/index -U chip${CHIP_ID}_1.fastq -S chip${CHIP_ID}.sam
 fi
 
 ## Transcript assembly 
