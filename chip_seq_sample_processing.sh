@@ -12,37 +12,39 @@
 
 ## Reading parameters
 
-CHIP_ID=$1
+CHIP=$1
 WD=$2
 NUMCHIP=$3
 
 
 ##Access chip folder 
 
-cd $WD/samples/chip${CHIP_ID}
+cd $WD/samples/chip/chip$CHIP
 
-##QC and mapping 
+##QC and mapping
 
-if [ -e chip${CHIP_ID}_2.fastq ]
+if [ -e chip${CHIP}_2.fastq ]
    then
-     fastqc chip${CHIP_ID}_1.fastq
-     fastqc chip${CHIP_ID}_2.fastq
+     fastqc chip${CHIP}_1.fastq
+     fastqc chip${CHIP}_2.fastq
 
-     bowtie2 -x ../../genome/index -1 chip${CHIP_ID}_1.fastq -2 chip${CHIP_ID}_2.fastq -S chip${CHIP_ID}.sam
+     bowtie2 -x $WD/genome/index -1 chip${CHIP}_1.fastq -2 chip${CHIP}_2.fastq -S chip${CHIP}.sam
 
    else
-     fastqc chip${CHIP_ID}_1.fastq
+     fastqc chip${CHIP}_1.fastq
 
-     bowtie2 -x ../../genome/index -U chip${CHIP_ID}_1.fastq -S chip${CHIP_ID}.sam
+     bowtie2 -x $WD/genome/index -U chip${CHIP}_1.fastq -S chip${CHIP}.sam
 fi
 
 ## Transcript assembly 
 
-samtools view -S -b chip${CHIP_ID}.sam > chip${CHIP_ID}.bam
-rm chip${CHIP_ID}.sam
-samtools sort chip${CHIP_ID}.bam -o chip_sorted_${CHIP_ID}.bam
-rm chip${CHIP_ID}.bam
-samtools index chip_sorted_${CHIP_ID}.bam
+cd $WD/samples/chip/chip${CHIP}
+
+samtools view -S -b chip${CHIP}.sam > chip${CHIP}.bam
+rm chip${CHIP}.sam
+samtools sort chip${CHIP}.bam -o chip_sorted_${CHIP}.bam
+rm chip$cHIP.bam
+samtools index chip_sorted_${CHIP}.bam
 
 
 ## Sincronisation poit trough blackboard
@@ -51,12 +53,7 @@ echo "chip${SAM_ID} DONE" >> $WD/logs/blackboard
 
 DONE_SAMPLES=$(wc -l $WD/logs/blackboard)
 
-I=0
-if [ $DONE_SAMPLES -eq $NUMCHIP ]
-then 
-   qsub -N input_sample_processing -o $WD/logs/input_sample_processing input_sample_processing.sh PARAMETROS
-   ((I++))
-fi
+
 
 
 
