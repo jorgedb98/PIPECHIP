@@ -120,7 +120,7 @@ gunzip annotation.gtf.gz
 cd $WD/genome
 bowtie2-build genome.fa index
 
-## Download samples
+## Download samples and name changing
 
 cd $WD/samples/chip
 
@@ -148,15 +148,21 @@ I=0
 
 while [ $I -lt $NUMINPUT ]
 do
-   cd input$((I+1))
+   cd chip$((I+1))
    fastq-dump --split-files ${SAMPLES_INPUT[$I]}
-   cd $WD/samples/input
-   ((I++))
-done
+   if [ -e ${SAMPLES_INPUT[$I]}_2.fastq ]
+      then 
+       mv ${SAMPLES_INPUT[$I]}_1.fastq chip$((I+1))_1.fastq
+       mv ${SAMPLES_INPUT[$I]}_2.fastq chip$((I+1))_2.fastq
+      else
+       mv ${SAMPLES_INPUT[$I]}_1.fastq chip$((I+1)).fastq
+   fi
 
-## Chip processing
+
+##Punto de paralelizacion 
 
 I=1
+
 while [ $I -le $NUMCHIP ]
 do
    qsub -N chip$I -o $WD/logs/chip$I /home/sarajorge/PIPECHIP/chip_seq_sample_processing.sh $I $WD ${NUMCHIP}
@@ -167,8 +173,9 @@ done
 ## Input processing
 
 I=1
+
 while [ $I -le $NUMINPUT ]
-do
+   do
    qsub -N input$I -o $WD/logs/input$I /home/sarajorge/PIPECHIP/input_sample_processing.sh $I $WD ${NUMINPUT} 
    ((I++))
 done
