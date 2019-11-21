@@ -28,13 +28,15 @@ GENOME=$(grep genome: $PARAMS | awk '{ print$2 }')
 ANNOTATION=$(grep annotation: $PARAMS | awk '{ print$2 }')
 NUMCHIP=$(grep chip_num: $PARAMS | awk '{ print$2 }')
 NUMINPUT=$(grep input_num: $PARAMS | awk '{ print$2 }')
+SAMPLE_DIR=$(grep sample_dir: $PARAMS | awk '{ print$2 }')
+
 
 SAMPLES_CHIP=( )
 I=0
 
 while [ $I -lt $NUMCHIP ]
 do
-   SAMPLES_CHIP[$I]=$(grep sra_chip$(($I+1)): $PARAMS | awk '{ print$2 }')
+   SAMPLES_CHIP[$I]=$(grep chip_$(($I+1)): $PARAMS | awk '{ print$2 }')
    ((I++))
 done
 
@@ -43,7 +45,7 @@ I=0
 
 while [ $I -lt $NUMINPUT ]
 do
-   SAMPLES_INPUT[$I]=$(grep sra_input$(($I+1)): $PARAMS | awk '{ print$2 }')
+   SAMPLES_INPUT[$I]=$(grep input_$(($I+1)): $PARAMS | awk '{ print$2 }')
    ((I++))
 done
 
@@ -124,48 +126,80 @@ bowtie2-build genome.fa index
 
 ## Copy the samples into the $WD/samples
 
-cd $WD/samples/chip
+while true; do
+     read -p "Are your samples already downloaded?" yn
+     case $yn in
 
-I=0
+        [Yy]* ) echo "Las muestras se deben encontrar en la carpeta $WD/test"
 
-while [ $I -lt $NUMCHIP ]
-do
-   cd chip$((I+1))
-   fastq-dump --split-files ${SAMPLES_CHIP[$I]}
-   if [ -e ${SAMPLES_CHIP[$I]}_2.fastq ]
-      then 
-       mv ${SAMPLES_CHIP[$I]}_1.fastq chip$((I+1))_1.fastq
-       mv ${SAMPLES_CHIP[$I]}_2.fastq chip$((I+1))_2.fastq
-      else
-       mv ${SAMPLES_CHIP[$I]}_1.fastq chip$((I+1)).fastq
-   fi
-   cd $WD/samples/chip
-   sleep 30s ##Wait 30 seconds
-   ((I++))
+	## Copying the CHIP samples
+
+        cd $WD/samples/chip
+        I=0
+
+        while [ $I -lt $NUMCHIP ]
+        do
+        cp ${SAMPLES_CHIP[$I]} chip$(($I+1))/chip$(($I+1)).fq.gz
+        ((I++))
+        done
+
+	## Copying the INPUT samples
+
+        cd $WD/samples/input
+        I=0
+
+        while [ $I -lt $NUMINPUT ]
+        do
+        cp ${SAMPLES_INPUT[$I]} chip$(($I+1))/input$(($I+1)).fq.gz
+        ((I++))
+        done; break;;
+        
+	[Nn]* ) echo "your samples will be downloaded from the ncbi"
+
+	while [ $I -lt $NUMCHIP ]
+	do
+   	cd chip$((I+1))
+   	fastq-dump --split-files ${SAMPLES_CHIP[$I]}
+   		if [ -e ${SAMPLES_CHIP[$I]}_2.fastq ]
+      		then 
+       		mv ${SAMPLES_CHIP[$I]}_1.fastq chip$((I+1))_1.fastq
+      		mv ${SAMPLES_CHIP[$I]}_2.fastq chip$((I+1))_2.fastq
+      		else
+       		mv ${SAMPLES_CHIP[$I]}_1.fastq chip$((I+1)).fastq
+   		fi
+   	
+		cd $WD/samples/chip
+   		sleep 30s ##Wait 30 seconds
+		((I++))
+	done
+
+	cd $WD/samples/input
+
+	I=0
+
+	while [ $I -lt $NUMINPUT ]
+	do
+   	cd input$((I+1))
+   	fastq-dump --split-files ${SAMPLES_INPUT[$I]}
+   		if [ -e ${SAMPLES_INPUT[$I]}_2.fastq ]
+      		then 
+       		mv ${SAMPLES_INPUT[$I]}_1.fastq input$((I+1))_1.fastq
+       		mv ${SAMPLES_INPUT[$I]}_2.fastq input$((I+1))_2.fastq
+      		else
+       		mv ${SAMPLES_INPUT[$I]}_1.fastq input$((I+1)).fastq
+   		fi
+   		cd $WD/samples/input
+   		sleep 30s ##Wait 30s
+   		((I++))
+		done
+     esac
 done
 
-cd $WD/samples/input
-
-I=0
-
-while [ $I -lt $NUMINPUT ]
-do
-   cd input$((I+1))
-   fastq-dump --split-files ${SAMPLES_INPUT[$I]}
-   if [ -e ${SAMPLES_INPUT[$I]}_2.fastq ]
-      then 
-       mv ${SAMPLES_INPUT[$I]}_1.fastq input$((I+1))_1.fastq
-       mv ${SAMPLES_INPUT[$I]}_2.fastq input$((I+1))_2.fastq
-      else
-       mv ${SAMPLES_INPUT[$I]}_1.fastq input$((I+1)).fastq
-   fi
-   cd $WD/samples/input
-   sleep 30s ##Wait 30s
-   ((I++))
-done
 
 
-##Punto de paralelizacion 
+
+
+## Punto de paralelizacion 
 
 I=1
 
