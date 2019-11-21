@@ -55,5 +55,5 @@ DONE_INPUT=$(wc -l $WD/logs/blackboard.txt | awk '{ print$1 }')
 
 if [ $DONE_INPUT -eq $NUMSAM ]
 then
-   qsub -N callpeak -o $WD/logs/callpeak $WD/calling_peaks.sh $WD $INPUT
+   qsub -N callpeak -o $WD/logs/callpeak /home/sarajorge/PIPE/calling_peaks.sh $WD $INPUT
 fi

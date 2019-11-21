@@ -56,5 +56,5 @@ DONE_CHIP=$(wc -l $WD/logs/blackboard.txt | awk '{ print$1  }')
 
 if [ $DONE_CHIP -le $NUMSAM ]
 then
-   qsub -N callpeak -o $WD/logs/callpeak $WD/calling_peaks.sh $WD $CHIP 
+   qsub -N callpeak -o $WD/logs/callpeak /home/sarajorge/PIPECHIP/calling_peaks.sh $WD $CHIP 
 fi

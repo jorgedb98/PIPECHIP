@@ -122,6 +122,8 @@ bowtie2-build genome.fa index
 
 ## Download samples and name changing
 
+## Copy the samples into the $WD/samples
+
 cd $WD/samples/chip
 
 I=0
