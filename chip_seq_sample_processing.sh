@@ -9,12 +9,13 @@
 #$ -j yes
 #$ -o chip_sample_processing
 
-
+#! /bin/bash
 ## Reading parameters
 
 CHIP=$1
 WD=$2
 NUMCHIP=$3
+NUMSAM=$4
 
 
 ##Access chip folder 
@@ -31,9 +32,9 @@ if [ -e chip${CHIP}_2.fastq ]
      bowtie2 -x $WD/genome/index -1 chip${CHIP}_1.fastq -2 chip${CHIP}_2.fastq -S chip${CHIP}.sam
 
    else
-     fastqc chip${CHIP}_1.fastq
+     fastqc chip${CHIP}.fastq
 
-     bowtie2 -x $WD/genome/index -U chip${CHIP}_1.fastq -S chip${CHIP}.sam
+     bowtie2 -x $WD/genome/index -U chip${CHIP}.fastq -S chip${CHIP}.sam
 fi
 
 ## Transcript assembly 
@@ -49,11 +50,11 @@ samtools index chip_sorted_${CHIP}.bam
 
 ## Sincronisation poit trough blackboard
 
-echo "chip${SAM_ID} DONE" >> $WD/logs/blackboard
+echo "chip${SAM_ID} DONE" >> $WD/logs/blackboard.txt
 
-DONE_SAMPLES=$(wc -l $WD/logs/blackboard)
+DONE_CHIP=$(wc -l $WD/logs/blackboard.txt | awk '{ print$1  }')
 
-
-
-
-
+if [ $DONE_CHIP -le $NUMSAM ]
+then
+   qsub -N callpeak -o $WD/logs/callpeak $WD/calling_peaks.sh $WD $CHIP 
+fi

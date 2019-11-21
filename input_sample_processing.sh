@@ -9,12 +9,13 @@
 #$ -j yes
 #$ -o input_sample_processing
 
+#! /bin/bash
 ##Reading parameters
 
 INPUT=$1
 WD=$2
 NUMCHIP=$3
-
+NUMSAM=$4
 
 ## Access input folder
 
@@ -30,9 +31,9 @@ if [ -e input${INPUT}_2.fastq ]
      bowtie2 -x $WD/genome/index -1 input${INPUT}_1.fastq -2 input${INPUT}_2.fastq -S input${INPUT}.sam
 
    else
-     fastqc input${INPUT}_1.fastq
+     fastqc input${INPUT}.fastq
 
-     bowtie2 -x $WD/genome/index -U input${INPUT}_1.fastq -S input${INPUT}.sam
+     bowtie2 -x $WD/genome/index -U input${INPUT}.fastq -S input${INPUT}.sam
 fi
 
 
@@ -48,6 +49,11 @@ samtools index input_sorted_${INPUT}.bam
 
 ## Sinch point through blackboard
 
-echo "input$INPUT DONE" >> $WD/logs/blackboard
+echo "input$INPUT DONE" >> $WD/logs/blackboard.txt
 
-DONE_SAMPLES=$(wc -l $WD/logs/blackboard)
+DONE_INPUT=$(wc -l $WD/logs/blackboard.txt | awk '{ print$1 }')
+
+if [ $DONE_INPUT -eq $NUMSAM ]
+then
+   qsub -N callpeak -o $WD/logs/callpeak $WD/calling_peaks.sh $WD $INPUT
+fi

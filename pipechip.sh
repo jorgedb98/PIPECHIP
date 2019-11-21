@@ -148,15 +148,19 @@ I=0
 
 while [ $I -lt $NUMINPUT ]
 do
-   cd chip$((I+1))
+   cd input$((I+1))
    fastq-dump --split-files ${SAMPLES_INPUT[$I]}
    if [ -e ${SAMPLES_INPUT[$I]}_2.fastq ]
       then 
-       mv ${SAMPLES_INPUT[$I]}_1.fastq chip$((I+1))_1.fastq
-       mv ${SAMPLES_INPUT[$I]}_2.fastq chip$((I+1))_2.fastq
+       mv ${SAMPLES_INPUT[$I]}_1.fastq input$((I+1))_1.fastq
+       mv ${SAMPLES_INPUT[$I]}_2.fastq input$((I+1))_2.fastq
       else
-       mv ${SAMPLES_INPUT[$I]}_1.fastq chip$((I+1)).fastq
+       mv ${SAMPLES_INPUT[$I]}_1.fastq input$((I+1)).fastq
    fi
+   cd $WD/samples/input
+   sleep 30s ##Wait 30s
+   ((I++))
+done
 
 
 ##Punto de paralelizacion 
@@ -165,7 +169,7 @@ I=1
 
 while [ $I -le $NUMCHIP ]
 do
-   qsub -N chip$I -o $WD/logs/chip$I /home/sarajorge/PIPECHIP/chip_seq_sample_processing.sh $I $WD ${NUMCHIP}
+   qsub -N chip$I -o $WD/logs/chip$I /home/sarajorge/PIPECHIP/chip_seq_sample_processing.sh $I $WD $NUMCHIP $NUMSAM
    ((I++))
 
 done
@@ -176,6 +180,6 @@ I=1
 
 while [ $I -le $NUMINPUT ]
    do
-   qsub -N input$I -o $WD/logs/input$I /home/sarajorge/PIPECHIP/input_sample_processing.sh $I $WD ${NUMINPUT} 
+   qsub -N input$I -o $WD/logs/input$I /home/sarajorge/PIPECHIP/input_sample_processing.sh $I $WD $NUMINPUT $NUMSAM
    ((I++))
 done
