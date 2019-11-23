@@ -28,7 +28,7 @@ GENOME=$(grep genome: $PARAMS | awk '{ print$2 }')
 ANNOTATION=$(grep annotation: $PARAMS | awk '{ print$2 }')
 NUMCHIP=$(grep chip_num: $PARAMS | awk '{ print$2 }')
 NUMINPUT=$(grep input_num: $PARAMS | awk '{ print$2 }')
-SAMPLE_DIR=$(grep sample_dir: $PARAMS | awk '{ print$2 }')
+
 
 
 SAMPLES_CHIP=( )
@@ -104,33 +104,62 @@ do
      ((I++))
 done
 
-## Download genome of reference
+## Downloading reference genome
 
-cd $WD/genome
-wget -O genome.fa.gz $GENOME
-gunzip genome.fa.gz
+while true; do
+     read -p "Is your reference genome already downloaded?" yn
+     case $yn in
+
+        [Yy]* ) echo "Genome must be saved in the folder $WD/test and unzipped"
+
+        ## Copying the genome.fa file
+
+        cd $WD/genome
+	cp $GENOME genome.fa; break;;
+
+	[Nn]* ) echo "The reference genome will be downloaded from ensemble"
+
+        cd $WD/genome
+	wget -O genome.fa.gz $GENOME
+	gunzip genome.fa.gz; break;;
+     esac
+done
 
 
 ## Download annotation
 
-cd $WD/annotation
-wget -O annotation.gtf.gz $ANNOTATION
-gunzip annotation.gtf.gz
+while true; do
+     read -p "Is your genome annotation already downloaded?" yn
+     case $yn in
+
+        [Yy]* ) echo "Annotation must be saved in the folder $WD/test and unzipped"
+
+        ## Copying the genome.fa file
+
+        cd $WD/annotation
+        cp $GENOME annotation.fa; break;;
+
+        [Nn]* ) echo "The reference genome will be downloaded from ensemble"
+
+        cd $WD/annotation
+        wget -O annotation.fa.gz $GENOME
+        gunzip annotation.fa.gz; break;;
+     esac
+done
+
 
 ## Building reference index
 
 cd $WD/genome
 bowtie2-build genome.fa index
 
-## Download samples and name changing
-
-## Copy the samples into the $WD/samples
+## Download/copy samples into the $WD/samples and name changing
 
 while true; do
      read -p "Are your samples already downloaded?" yn
      case $yn in
 
-        [Yy]* ) echo "Las muestras se deben encontrar en la carpeta $WD/test"
+        [Yy]* ) echo "Samples must be at $WD/test"
 
 	## Copying the CHIP samples
 
@@ -139,8 +168,9 @@ while true; do
 
         while [ $I -lt $NUMCHIP ]
         do
-        cp ${SAMPLES_CHIP[$I]} chip$(($I+1))/chip$(($I+1)).fq.gz
-        ((I++))
+        cp ${SAMPLES_CHIP[$I]} chip$(($I+1))/chip$(($I+1)).fastq
+        cd chip$(($I+1))
+	((I++))
         done
 
 	## Copying the INPUT samples
@@ -150,56 +180,61 @@ while true; do
 
         while [ $I -lt $NUMINPUT ]
         do
-        cp ${SAMPLES_INPUT[$I]} chip$(($I+1))/input$(($I+1)).fq.gz
-        ((I++))
+        cp ${SAMPLES_INPUT[$I]} input$(($I+1))/input$(($I+1)).fastq
+        cd input$(($I+1))
+	((I++))
         done; break;;
         
-	[Nn]* ) echo "your samples will be downloaded from the ncbi"
+	[Nn]* ) echo "Please, make sure you added the right SRR in the params file. Your samples will be downloaded from the ncbi"
 
+        ##Downloading CHIP samples
+
+        cd $WD/samples/chip
+
+        I=0
 	while [ $I -lt $NUMCHIP ]
 	do
    	cd chip$((I+1))
    	fastq-dump --split-files ${SAMPLES_CHIP[$I]}
-   		if [ -e ${SAMPLES_CHIP[$I]}_2.fastq ]
-      		then 
-       		mv ${SAMPLES_CHIP[$I]}_1.fastq chip$((I+1))_1.fastq
-      		mv ${SAMPLES_CHIP[$I]}_2.fastq chip$((I+1))_2.fastq
-      		else
-       		mv ${SAMPLES_CHIP[$I]}_1.fastq chip$((I+1)).fastq
-   		fi
-   	
-		cd $WD/samples/chip
-   		sleep 30s ##Wait 30 seconds
-		((I++))
+   	if [ -e ${SAMPLES_CHIP[$I]}_2.fastq ]
+      	then
+       	   mv ${SAMPLES_CHIP[$I]}_1.fastq chip$((I+1))_1.fastq
+      	   mv ${SAMPLES_CHIP[$I]}_2.fastq chip$((I+1))_2.fastq
+      	else
+       	   mv ${SAMPLES_CHIP[$I]}_1.fastq chip$((I+1)).fastq
+   	fi
+
+	cd $WD/samples/chip
+	sleep 15s ##Wait 15 seconds
+	((I++))
 	done
+
+	##Downloading INPUT samples
 
 	cd $WD/samples/input
 
 	I=0
-
 	while [ $I -lt $NUMINPUT ]
 	do
    	cd input$((I+1))
    	fastq-dump --split-files ${SAMPLES_INPUT[$I]}
-   		if [ -e ${SAMPLES_INPUT[$I]}_2.fastq ]
-      		then 
-       		mv ${SAMPLES_INPUT[$I]}_1.fastq input$((I+1))_1.fastq
-       		mv ${SAMPLES_INPUT[$I]}_2.fastq input$((I+1))_2.fastq
-      		else
-       		mv ${SAMPLES_INPUT[$I]}_1.fastq input$((I+1)).fastq
-   		fi
-   		cd $WD/samples/input
-   		sleep 30s ##Wait 30s
-   		((I++))
-		done
+   	if [ -e ${SAMPLES_INPUT[$I]}_2.fastq ]
+      	then 
+       	   mv ${SAMPLES_INPUT[$I]}_1.fastq input$((I+1))_1.fastq
+           mv ${SAMPLES_INPUT[$I]}_2.fastq input$((I+1))_2.fastq
+      	else
+       	   mv ${SAMPLES_INPUT[$I]}_1.fastq input$((I+1)).fastq
+   	fi
+
+   	cd $WD/samples/input
+   	sleep 30s ##Wait 30s
+   	((I++))
+	done; break;;
      esac
 done
 
 
-
-
-
-## Punto de paralelizacion 
+## Synch point 
 
 I=1
 
