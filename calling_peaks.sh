@@ -25,10 +25,6 @@ I=1
 
 while [ $I -le $ID ]
 do
-   macs2 callpeak -t $WD/samples/chip/chip_sorted_{$ID}. bam -c $WD/samples/input/input_sorted_{$ID}.bam -f BAM --outdir $WD/results -n peak_determination
+   macs2 callpeak -t $WD/samples/chip/chip$ID/chip_sorted_$ID.bam -c $WD/samples/input/input${ID}/input_sorted_${ID}.bam -f BAM --outdir $WD/results -n peak_determination
    ((I++))
 done
-
-##PeakAnnotation using the nearest downstream gene as reference
-java -jar $WD/scripts/PeakAnnotator.jar -u NDG -g all -p peak_determination.bed -a $WD/annotation/annotation.gtf -o $WD/results
-
