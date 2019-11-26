@@ -11,3 +11,6 @@ input_1: SRR7264106
 input_2: SRR7264107
 
 sample_dir: /home/sarajorge/PIPECHIP/test
+
+promoter: 1000
+output: peak_processing

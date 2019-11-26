@@ -28,8 +28,8 @@ GENOME=$(grep genome: $PARAMS | awk '{ print$2 }')
 ANNOTATION=$(grep annotation: $PARAMS | awk '{ print$2 }')
 NUMCHIP=$(grep chip_num: $PARAMS | awk '{ print$2 }')
 NUMINPUT=$(grep input_num: $PARAMS | awk '{ print$2 }')
-
-
+PROMOTER=$(grep promotore: $PARAMS | awk '{ print$2  }')
+OUTPUT=$(grep output: $PARAMS | awk '{ print$2  }')
 
 SAMPLES_CHIP=( )
 I=0
@@ -58,6 +58,8 @@ echo GENOME=$GENOME
 echo ANNOTATION=$ANNOTATION
 echo NUMBER_CHIP_SAMPLES=$NUMCHIP
 echo NUMBER_INPUT_SAMPLES=$NUMINPUT
+echo PROMOTER=$PROMOTER
+echo OUTPUT=$OUTPUT
 
 I=0
 
@@ -240,7 +242,7 @@ I=1
 
 while [ $I -le $NUMCHIP ]
 do
-   qsub -N chip$I -o $WD/logs/chip$I /home/sarajorge/PIPECHIP/chip_seq_sample_processing.sh $I $WD $NUMCHIP $NUMSAM
+   qsub -N chip$I -o $WD/logs/chip$I /home/sarajorge/PIPECHIP/chip_seq_sample_processing.sh $I $WD $NUMCHIP $NUMSAM $PROMOTER $OUTPUT
    ((I++))
 
 done
@@ -251,6 +253,6 @@ I=1
 
 while [ $I -le $NUMINPUT ]
    do
-   qsub -N input$I -o $WD/logs/input$I /home/sarajorge/PIPECHIP/input_sample_processing.sh $I $WD $NUMINPUT $NUMSAM
+   qsub -N input$I -o $WD/logs/input$I /home/sarajorge/PIPECHIP/input_sample_processing.sh $I $WD $NUMINPUT $NUMSAM $PROMOTER $OUTPUT
    ((I++))
 done

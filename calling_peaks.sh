@@ -15,6 +15,8 @@
 
 WD=$1
 ID=$2
+PROMOTER=$3
+OUTPUT=$4
 
 #Callpeak function
 
@@ -25,6 +27,12 @@ I=1
 
 while [ $I -le $ID ]
 do
-   macs2 callpeak -t $WD/samples/chip/chip$ID/chip_sorted_$ID.bam -c $WD/samples/input/input${ID}/input_sorted_${ID}.bam -f BAM --outdir $WD/results -n peak_determination
+   macs2 callpeak -t $WD/samples/chip/chip$ID/chip_sorted_${ID}.bam -c $WD/samples/input/input$ID/input_sorted_${ID}.bam -n 'Picos_$I' --outdir . -f BAM
    ((I++))
 done
+
+## Rscript
+
+
+qsub -N peak_processing.R -o $WD/logs/peak_processing /home/sarajorge/PIPECHIP/target_genes.R peak_determination $PROMOTER $OUTPUT
+
