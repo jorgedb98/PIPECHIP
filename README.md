@@ -36,14 +36,14 @@ In this section each parameter from the `params.sh` file is explained. Please re
 
 - `input_num`: This parameter refers to the number of input samples.
 
-This example is given for a test where 2 chip samples and 2 input samples are used. Following, it will be indicated the samples. Once, more, ther might be 2 possible options here:
-  - __HAVING ALREADY DOWNLOADED THE SAMPLES.__ In this case, you should paste them as well into the `test` folder and add in this parameter, the path to this folder.
-  - __NOT HAVING DOWNLOADED THE SAMPLES.__ In this case, you must paste here the SRR accession number from NCBI.
-  
+This example is given for a test where 2 chip samples and 2 input samples are used. Following, it will be indicated the samples.
 - `chip_1`: paste the path to the chip 1 sample or add the right SRR.
 - `chip_2`: paste the path to the chip 2 sample or add the right SRR.
 - `input_1`: paste the path to the inpu 1 sample or add the right SRR.
 - `input_2`: paste the path to the input 2 sample or add the right SRR.
+Once, more, ther might be 2 possible options here:
+  - __HAVING ALREADY DOWNLOADED THE SAMPLES.__ In this case, you should paste them as well into the `test` folder and add in this parameter, the path to this folder.
+  - __NOT HAVING DOWNLOADED THE SAMPLES.__ In this case, you must paste here the SRR accession number from NCBI.
 
 - `sample_dir`: paste the path to the `test` folder where yu have pasted the params file along with the genome, annotation and samples, given the case you have them already downloaded.
 
