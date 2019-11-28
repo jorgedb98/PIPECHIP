@@ -10,7 +10,7 @@ if [ $# -eq 0 ]
     echo "This pipeline analysisi Chip Seq data."
     echo "Usage: piperna <param_file>"
     echo ""
-    echo "param_file: File with the parameters spefification. Please, check params.sh for an example"
+    echo "param_file: File with the parameters specification. Please, check params.sh in the test folder for an example"
     echo ""
     echo "Enjoy!"
 
