@@ -16,7 +16,7 @@ and what structures they conform.
 ## Usage
 For carrying the study you migth need to create a parameters file in order to create those which they may find necessary.
 To see an example, please check the test folder. Inside it there are two different paramteres files, one for an analysisis having
-already downloaded the refference genome, the annotatio and samples and another one in case you have to download them all.
+already downloaded the refference genome, the annotatio and samples and another one in case you have to download them all. For further information just __type pipechip.sh__ and a message of instructions will prompt.
 
 ## Params files
 __PLEASE NOTICE THAT THIS TUTORIAL INCLUDES A `test` FOLDER WHERE THE PARAMS FILE IS AVAILABLE. TAKE INTO ACCOUNT THAT THIS EXAMPLE IS GIVEN FOR HAVING TO DOWNLOAD THE REFFERENCE GENOME, THE ANNOTATION AND THE SAMPLES.__
