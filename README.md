@@ -49,7 +49,9 @@ Once, more, ther might be 2 possible options here:
   - `chip_2`: add the right SRR.
   - `input_1`: add the right SRR.
   - `input_2`: add the right SRR.
-If you have more than 2 chip and input samples, all you have to do is add extra parameter following the previous order and making sure you write them as chip_n and input_n where n refers to the sample number
+
+__If you have more than 2 chip and input samples, all you have to do is add extra parameter following the previous order and making sure you write them as chip_n and input_n where n refers to the sample number.__
+
 - `sample_dir`: paste the path to the `test` folder where yu have pasted the params file along with the genome, annotation and samples, given the case you have them already downloaded.
 
 - `promoter`: This parameter refers to the length of the promotoer for the proccessing of picks obtained using macs2 function. 
