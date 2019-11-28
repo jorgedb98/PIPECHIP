@@ -57,17 +57,17 @@ Once, more, ther might be 2 possible options here:
 
 ## Scripts
 In this section we shall describe each script so as you know how the analysis work.
-### pipechip.sh
+### `pipechip.sh`
 This script is the general script and will launch the others when  needed. First of all it will create the working directory (WD) with the samples folders and subfolders. After that it will prompt a question whether you have or not already downloaded the genome. If yes, it will copy it from the test folder to the correc one inside the WD. If not, it will download it from the link given in the params file. After that the script will prompt another question on whether you have or not already downloaded the annotation. If yes, it will copy it from the test folder into the correct one inside the WD. If not, it will download it from the link given in the params file.
 Once having downloaded both the genome and annotation it will create the index. After that the script will prompt a third message asking if the samples are downloaded or not. If yes, it will copy them from the test folder into the correct one taking into account chip and inputs samples (__you shall make sure you have added the input and chip samples correctly in the params file__). If not, it will download them using the SRR given in the params file. Once this is done, the script will launch the chip and input processing scripts.
 
-### chip_sample_processing.sh
+### `chip_sample_processing.sh`
 This script processes the samples. It creates the .sam, .bam, sorted.bam and sorted.bam.bai files of the chip samples.
 
-### input_sample_processing.sh
+### `input_sample_processing.sh`
 This script processes the samples. It creates the .sam, .bam, sorted.bam and sorted.bam.bai files of the input samples.
 
-### calling_peaks.sh
+### `calling_peaks.sh`
 This scripts is launched once both chip_sample_processing. sh and input_sample:processing.sh are done. 
 
 ## Example given
